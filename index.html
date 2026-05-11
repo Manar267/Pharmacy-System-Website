@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صيدلية — نظام الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f7f5;
+  --sidebar: #0f3d26;
+  --sidebar2: #1a5c3a;
+  --accent: #27ae60;
+  --accent2: #2ecc71;
+  --danger: #e74c3c;
+  --warn: #f39c12;
+  --info: #2980b9;
+  --white: #fff;
+  --card: #fff;
+  --border: #ddeee5;
+  --text: #1a2e22;
+  --muted: #6e8c7a;
+  --font: 'Tajawal', sans-serif;
+  --radius: 12px;
+  --shadow: 0 2px 16px rgba(15,61,38,.09);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); display:flex; min-height:100vh; font-size:15px; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 230px; min-height:100vh; background:var(--sidebar);
+  display:flex; flex-direction:column; position:fixed; top:0; right:0; z-index:50;
+  box-shadow: -4px 0 20px rgba(0,0,0,.18);
+}
+.sidebar-logo {
+  padding:24px 20px 18px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  display:flex; align-items:center; gap:12px;
+}
+.sidebar-logo .ico { font-size:28px; }
+.sidebar-logo h1 { color:#fff; font-size:17px; font-weight:800; line-height:1.2; }
+.sidebar-logo p { color:#a8d5bb; font-size:11px; }
+.sidebar-menu { flex:1; padding:16px 10px; }
+.menu-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-radius:10px; cursor:pointer;
+  color:rgba(255,255,255,.7); font-size:14px; font-weight:600;
+  transition:all .2s; margin-bottom:4px; text-align:right;
+}
+.menu-item:hover { background:rgba(255,255,255,.1); color:#fff; }
+.menu-item.active { background:var(--accent); color:#fff; box-shadow:0 4px 12px rgba(39,174,96,.3); }
+.menu-item .mi { font-size:18px; min-width:22px; text-align:center; }
+.sidebar-bottom { padding:14px 10px; border-top:1px solid rgba(255,255,255,.08); }
+.pharmacy-info { color:rgba(255,255,255,.5); font-size:11px; text-align:center; line-height:1.7; }
+
+/* MAIN */
+.main { margin-right:230px; flex:1; min-height:100vh; display:flex; flex-direction:column; }
+.topbar {
+  background:#fff; padding:0 28px; height:62px; display:flex; align-items:center;
+  justify-content:space-between; border-bottom:1.5px solid var(--border);
+  position:sticky; top:0; z-index:40; box-shadow:0 1px 8px rgba(0,0,0,.06);
+}
+.topbar-title { font-size:19px; font-weight:800; color:var(--sidebar); }
+.topbar-date { color:var(--muted); font-size:13px; }
+.content { padding:24px 28px; flex:1; }
+
+/* CARDS */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.stat-card {
+  background:var(--card); border-radius:var(--radius); padding:20px 22px;
+  box-shadow:var(--shadow); display:flex; align-items:center; gap:16px;
+  border-right:4px solid transparent;
+}
+.stat-card.green { border-color:var(--accent); }
+.stat-card.red { border-color:var(--danger); }
+.stat-card.orange { border-color:var(--warn); }
+.stat-card.blue { border-color:var(--info); }
+.stat-ico { font-size:30px; }
+.stat-num { font-size:26px; font-weight:900; line-height:1; }
+.stat-label { font-size:12px; color:var(--muted); margin-top:3px; }
+
+/* PANELS */
+.panel { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; margin-bottom:22px; }
+.panel-head {
+  padding:14px 20px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1.5px solid var(--border); background:#fafffe;
+}
+.panel-head h2 { font-size:16px; font-weight:800; color:var(--sidebar); display:flex; align-items:center; gap:8px; }
+.panel-body { padding:20px; }
+
+/* FORMS */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-grid.three { grid-template-columns:1fr 1fr 1fr; }
+.form-grid.one { grid-template-columns:1fr; }
+.field { display:flex; flex-direction:column; gap:5px; }
+label { font-size:13px; font-weight:700; color:var(--sidebar); }
+input, select, textarea {
+  border:1.5px solid var(--border); border-radius:8px; padding:9px 13px;
+  font-family:var(--font); font-size:14px; color:var(--text);
+  background:#fff; outline:none; transition:border-color .2s;
+  text-align:right; width:100%;
+}
+input:focus, select:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(39,174,96,.12); }
+select { cursor:pointer; }
+
+/* BUTTONS */
+.btn {
+  padding:10px 22px; border-radius:8px; border:none; cursor:pointer;
+  font-family:var(--font); font-size:14px; font-weight:700; transition:all .18s;
+  display:inline-flex; align-items:center; gap:7px;
+}
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-primary:hover { background:#219a52; transform:translateY(-1px); box-shadow:0 4px 12px rgba(39,174,96,.3); }
+.btn-danger { background:var(--danger); color:#fff; }
+.btn-danger:hover { background:#c0392b; }
+.btn-sm { padding:6px 14px; font-size:12px; }
+.btn-outline { background:transparent; border:1.5px solid var(--accent); color:var(--accent); }
+.btn-outline:hover { background:var(--accent); color:#fff; }
+
+/* TABLE */
+.tbl-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th { background:#f0f8f3; color:var(--sidebar); font-weight:800; padding:11px 14px; text-align:right; font-size:13px; border-bottom:2px solid var(--border); white-space:nowrap; }
+td { padding:11px 14px; border-bottom:1px solid #eef5f0; vertical-align:middle; }
+tr:hover td { background:#f8fdfb; }
+tr:last-child td { border-bottom:none; }
+
+/* BADGES */
+.badge { display:inline-block; padding:3px 11px; border-radius:20px; font-size:12px; font-weight:700; }
+.badge-green { background:#e4f8ed; color:#1a7a40; }
+.badge-red { background:#fde8e8; color:#a01a1a; }
+.badge-orange { background:#fff3dd; color:#955900; }
+.badge-blue { background:#e3eeff; color:#1a4a9a; }
+.badge-gray { background:#f0f0f0; color:#555; }
+
+/* ALERTS */
+.alert { padding:12px 16px; border-radius:8px; font-size:13px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.alert-success { background:#e4f8ed; color:#1a7a40; border-right:4px solid var(--accent); }
+.alert-danger { background:#fde8e8; color:#a01a1a; border-right:4px solid var(--danger); }
+.alert-warn { background:#fff3dd; color:#955900; border-right:4px solid var(--warn); }
+
+/* SEARCH */
+.search-bar { display:flex; gap:10px; margin-bottom:16px; }
+.search-bar input { flex:1; }
+
+/* TABS inside panel */
+.inner-tabs { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.inner-tab { padding:7px 18px; border-radius:20px; border:1.5px solid var(--border); background:#fff; color:var(--muted); font-family:var(--font); font-size:13px; font-weight:700; cursor:pointer; transition:all .18s; }
+.inner-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* LOW STOCK WARNING */
+.low-stock { color:var(--danger); font-weight:700; }
+.ok-stock { color:var(--accent); }
+
+/* MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:200; display:flex; align-items:center; justify-content:center; }
+.modal { background:#fff; border-radius:var(--radius); padding:28px; width:500px; max-width:95vw; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.modal h3 { font-size:18px; font-weight:800; color:var(--sidebar); margin-bottom:18px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+
+/* PAGE */
+.page { display:none; }
+.page.active { display:block; animation:fadeIn .25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* Divider */
+.divider { height:1px; background:var(--border); margin:18px 0; }
+
+/* Empty */
+.empty { text-align:center; padding:40px 20px; color:var(--muted); }
+.empty .e-ico { font-size:40px; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span class="ico">💊</span>
+    <div>
+      <h1>صيدلية الشفاء</h1>
+      <p>نظام الإدارة المتكامل</p>
+    </div>
+  </div>
+  <nav class="sidebar-menu">
+    <div class="menu-item active" onclick="gotoPage('dashboard')"><span class="mi">🏠</span> الرئيسية</div>
+    <div class="menu-item" onclick="gotoPage('pos')"><span class="mi">🛒</span> فاتورة بيع جديدة</div>
+    <div class="menu-item" onclick="gotoPage('medicines')"><span class="mi">💊</span> الأدوية والمخزون</div>
+    <div class="menu-item" onclick="gotoPage('patients')"><span class="mi">🤒</span> المرضى</div>
+    <div class="menu-item" onclick="gotoPage('invoices')"><span class="mi">🧾</span> الفواتير والمبيعات</div>
+    <div class="menu-item" onclick="gotoPage('returns')"><span class="mi">↩️</span> المرتجعات</div>
+    <div class="menu-item" onclick="gotoPage('staff')"><span class="mi">👥</span> الموظفون</div>
+    <div class="menu-item" onclick="gotoPage('low_stock')"><span class="mi">⚠️</span> النواقص والتنبيهات</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="pharmacy-info">📍 الإسكندرية، مصر<br>📞 +20 101 050 1997</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">🏠 الرئيسية</div>
+    <div class="topbar-date" id="topbar-date"></div>
+  </div>
+  <div class="content">
+
+    <!-- TOAST -->
+    <div id="toast" style="display:none"></div>
+
+    <!-- ========== DASHBOARD ========== -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-row">
+        <div class="stat-card green"><span class="stat-ico">💊</span><div><div class="stat-num" id="st-meds">0</div><div class="stat-label">صنف دواء</div></div></div>
+        <div class="stat-card blue"><span class="stat-ico">🤒</span><div><div class="stat-num" id="st-patients">0</div><div class="stat-label">مريض مسجّل</div></div></div>
+        <div class="stat-card orange"><span class="stat-ico">🧾</span><div><div class="stat-num" id="st-invoices">0</div><div class="stat-label">فاتورة اليوم</div></div></div>
+        <div class="stat-card red"><span class="stat-ico">⚠️</span><div><div class="stat-num" id="st-low">0</div><div class="stat-label">صنف ناقص</div></div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="panel">
+          <div class="panel-head"><h2>🕐 آخر الفواتير</h2></div>
+          <div class="panel-body">
+            <div class="tbl-wrap"><table id="dash-invoices-tbl">
+              <thead><tr><th>رقم الفاتورة</th><th>المريض</th><th>المبلغ</th><th>الوقت</th></tr></thead>
+              <tbody id="dash-invoices-body"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>⚠️ أصناف تحتاج تجديد</h2></div>
+          <div class="panel-body">
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>الدواء</th><th>الكمية</th><th>الحالة</th></tr></thead>
+              <tbody id="dash-low-body"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== POS - فاتورة بيع ========== -->
+    <div id="page-pos" class="page">
+      <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start">
+        <!-- Left: form -->
+        <div>
+          <div class="panel">
+            <div class="panel-head"><h2>🤒 بيانات المريض</h2></div>
+            <div class="panel-body">
+              <div class="form-grid">
+                <div class="field">
+                  <label>اختر مريض مسجّل</label>
+                  <select id="pos-patient-select" onchange="selectPatient()">
+                    <option value="">-- اختر --</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>أو اسم مريض جديد</label>
+                  <input type="text" id="pos-patient-name" placeholder="اسم المريض">
+                </div>
+                <div class="field">
+                  <label>رقم الهاتف</label>
+                  <input type="text" id="pos-patient-phone" placeholder="01xxxxxxxxx">
+                </div>
+                <div class="field">
+                  <label>الموظف المسؤول</label>
+                  <select id="pos-employee">
+                    <option value="">-- اختر موظف --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>➕ إضافة دواء للفاتورة</h2></div>
+            <div class="panel-body">
+              <div class="form-grid three">
+                <div class="field">
+                  <label>الدواء</label>
+                  <select id="pos-med" onchange="updateMedInfo()">
+                    <option value="">-- اختر --</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>الكمية المتاحة</label>
+                  <input type="text" id="pos-available" readonly placeholder="—">
+                </div>
+                <div class="field">
+                  <label>الكمية</label>
+                  <input type="number" id="pos-qty" min="1" value="1">
+                </div>
+                <div class="field">
+                  <label>السعر (ج)</label>
+                  <input type="number" id="pos-price" min="0" step="0.5">
+                </div>
+                <div class="field">
+                  <label>خصم (%)</label>
+                  <input type="number" id="pos-disc" min="0" max="100" value="0">
+                </div>
+                <div class="field" style="justify-content:flex-end">
+                  <label>&nbsp;</label>
+                  <button class="btn btn-outline" onclick="addToCart()">➕ أضف</button>
+                </div>
+              </div>
+              <div id="pos-alert" style="margin-top:10px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: cart -->
+        <div class="panel" style="position:sticky;top:80px">
+          <div class="panel-head"><h2>🛒 الفاتورة الحالية</h2></div>
+          <div class="panel-body">
+            <div id="cart-empty" class="empty" style="padding:20px"><div class="e-ico">🛒</div><div>لا توجد أصناف بعد</div></div>
+            <div id="cart-items"></div>
+            <div id="cart-total" style="display:none">
+              <div class="divider"></div>
+              <div style="display:flex;justify-content:space-between;font-weight:800;font-size:17px;color:var(--sidebar)">
+                <span>الإجمالي:</span>
+                <span id="cart-total-val">0 ج</span>
+              </div>
+              <div class="divider"></div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="submitInvoice()">✅ تأكيد الفاتورة</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px" onclick="clearCart()">🗑️ إلغاء</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== MEDICINES ========== -->
+    <div id="page-medicines" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>💊 إضافة دواء جديد</h2>
+        </div>
+        <div class="panel-body">
+          <div class="form-grid three">
+            <div class="field"><label>اسم الدواء</label><input type="text" id="med-name" placeholder="Panadol"></div>
+            <div class="field"><label>التصنيف</label>
+              <select id="med-cat">
+                <option>مسكن ألم</option><option>مضاد حيوي</option><option>فيتامينات</option>
+                <option>أدوية قلب</option><option>أدوية سكر</option><option>أدوية ضغط</option>
+                <option>مضاد التهاب</option><option>دواء معدة</option><option>أخرى</option>
+              </select>
+            </div>
+            <div class="field"><label>النوع</label>
+              <select id="med-type">
+                <option>قرص</option><option>كبسولة</option><option>شراب</option>
+                <option>حقنة</option><option>كريم</option><option>قطرة</option><option>أخرى</option>
+              </select>
+            </div>
+            <div class="field"><label>الكمية في المخزون</label><input type="number" id="med-qty" min="0" value="0"></div>
+            <div class="field"><label>الحد الأدنى للتنبيه</label><input type="number" id="med-min" min="1" value="10"></div>
+            <div class="field"><label>تاريخ الانتهاء</label><input type="date" id="med-exp"></div>
+            <div class="field"><label>المورد</label><input type="text" id="med-supplier" placeholder="اسم الشركة"></div>
+            <div class="field"><label>سعر البيع (ج)</label><input type="number" id="med-price" min="0" step="0.5"></div>
+            <div class="field" style="justify-content:flex-end">
+              <label>&nbsp;</label>
+              <button class="btn btn-primary" onclick="addMedicine()">💾 حفظ الدواء</button>
+            </div>
+          </div>
+          <div id="med-alert" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>📦 قائمة الأدوية والمخزون</h2></div>
+        <div class="panel-body">
+          <div class="search-bar">
+            <input type="text" id="med-search" placeholder="🔍 ابحث عن دواء..." oninput="renderMedicines()">
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>اسم الدواء</th><th>التصنيف</th><th>النوع</th><th>المخزون</th><th>الانتهاء</th><th>المورد</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
+              <tbody id="med-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PATIENTS ========== -->
+    <div id="page-patients" class="page">
+      <div class="panel">
+        <div class="panel-head"><h2>➕ تسجيل مريض جديد</h2></div>
+        <div class="panel-body">
+          <div class="form-grid three">
+            <div class="field"><label>الاسم الكامل</label><input type="text" id="pat-name" placeholder="محمد أحمد"></div>
+            <div class="field"><label>رقم الهاتف</label><input type="text" id="pat-phone" placeholder="01xxxxxxxxx"></div>
+            <div class="field"><label>العمر</label><input type="number" id="pat-age" min="1" max="120"></div>
+            <div class="field"><label>النوع</label>
+              <select id="pat-gender"><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select>
+            </div>
+            <div class="field"><label>الرقم القومي (اختياري)</label><input type="text" id="pat-ssn" placeholder="3xxxxxxxxxxxxxxx"></div>
+            <div class="field"><label>أمراض مزمنة</label><input type="text" id="pat-chronic" placeholder="سكر، ضغط، ..."></div>
+          </div>
+          <div style="margin-top:14px"><button class="btn btn-primary" onclick="addPatient()">💾 حفظ المريض</button></div>
+          <div id="pat-alert" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>🤒 قائمة المرضى</h2></div>
+        <div class="panel-body">
+          <div class="search-bar">
+            <input type="text" id="pat-search" placeholder="🔍 ابحث باسم أو هاتف..." oninput="renderPatients()">
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>الاسم</th><th>الهاتف</th><th>العمر</th><th>النوع</th><th>أمراض مزمنة</th><th>عدد الفواتير</th><th>إجراء</th></tr></thead>
+              <tbody id="pat-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== INVOICES ========== -->
+    <div id="page-invoices" class="page">
+      <div class="panel">
+        <div class="panel-head"><h2>🧾 سجل الفواتير والمبيعات</h2></div>
+        <div class="panel-body">
+          <div class="search-bar">
+            <input type="text" id="inv-search" placeholder="🔍 ابحث باسم مريض أو رقم فاتورة..." oninput="renderInvoices()">
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>رقم الفاتورة</th><th>المريض</th><th>الموظف</th><th>الأصناف</th><th>الإجمالي</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+              <tbody id="inv-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== RETURNS ========== -->
+    <div id="page-returns" class="page">
+      <div class="panel">
+        <div class="panel-head"><h2>↩️ تسجيل مرتجع</h2></div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="field">
+              <label>رقم الفاتورة الأصلية</label>
+              <select id="ret-invoice" onchange="loadReturnItems()">
+                <option value="">-- اختر فاتورة --</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>الدواء المُرجَع</label>
+              <select id="ret-med"><option value="">-- اختر بعد الفاتورة --</option></select>
+            </div>
+            <div class="field">
+              <label>الكمية المُرجَعة</label>
+              <input type="number" id="ret-qty" min="1" value="1">
+            </div>
+            <div class="field">
+              <label>سبب الإرجاع</label>
+              <select id="ret-reason">
+                <option>خطأ في الصرف</option><option>منتهي الصلاحية</option>
+                <option>تغيير الوصفة</option><option>رفض المريض</option><option>أخرى</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:14px"><button class="btn btn-primary" onclick="addReturn()">✅ تسجيل المرتجع</button></div>
+          <div id="ret-alert" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>📋 سجل المرتجعات</h2></div>
+        <div class="panel-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>رقم الفاتورة</th><th>المريض</th><th>الدواء</th><th>الكمية</th><th>السبب</th><th>التاريخ</th></tr></thead>
+              <tbody id="ret-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== STAFF ========== -->
+    <div id="page-staff" class="page">
+      <div class="panel">
+        <div class="panel-head"><h2>➕ إضافة موظف</h2></div>
+        <div class="panel-body">
+          <div class="form-grid three">
+            <div class="field"><label>الاسم الكامل</label><input type="text" id="staff-name" placeholder="أحمد محمد"></div>
+            <div class="field"><label>الوظيفة</label>
+              <select id="staff-job">
+                <option>صيدلاني</option><option>مدير</option><option>كاشير</option><option>مبيعات</option>
+              </select>
+            </div>
+            <div class="field"><label>الراتب (ج)</label><input type="number" id="staff-salary" min="0"></div>
+            <div class="field"><label>رقم الهاتف</label><input type="text" id="staff-phone" placeholder="01xxxxxxxxx"></div>
+            <div class="field"><label>تاريخ التعيين</label><input type="date" id="staff-hire"></div>
+          </div>
+          <div style="margin-top:14px"><button class="btn btn-primary" onclick="addStaff()">💾 حفظ الموظف</button></div>
+          <div id="staff-alert" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>👥 الموظفون</h2></div>
+        <div class="panel-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>الاسم</th><th>الوظيفة</th><th>الراتب</th><th>الهاتف</th><th>تاريخ التعيين</th><th>إجراء</th></tr></thead>
+              <tbody id="staff-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== LOW STOCK ========== -->
+    <div id="page-low_stock" class="page">
+      <div id="low-alerts-box" style="margin-bottom:18px"></div>
+      <div class="panel">
+        <div class="panel-head"><h2>⚠️ الأصناف الناقصة والتنبيهات</h2></div>
+        <div class="panel-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>اسم الدواء</th><th>الكمية الحالية</th><th>الحد الأدنى</th><th>تاريخ الانتهاء</th><th>الحالة</th><th>إجراء</th></tr></thead>
+              <tbody id="low-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- INVOICE DETAIL MODAL -->
+<div id="inv-modal" class="modal-overlay" style="display:none" onclick="closeModal('inv-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>🧾 تفاصيل الفاتورة</h3>
+    <div id="inv-modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('inv-modal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESTOCK MODAL -->
+<div id="restock-modal" class="modal-overlay" style="display:none" onclick="closeModal('restock-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>📦 تجديد مخزون</h3>
+    <div class="field" style="margin-bottom:14px">
+      <label id="restock-med-name">الدواء</label>
+      <input type="number" id="restock-qty" min="1" placeholder="الكمية المضافة">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="doRestock()">✅ إضافة للمخزون</button>
+      <button class="btn btn-outline" onclick="closeModal('restock-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA STORE ====================
+let DB = {
+  medicines: [],
+  patients: [],
+  invoices: [],
+  returns: [],
+  staff: [],
+  nextInvId: 1001
+};
+
+// Seed data
+function seedData() {
+  if (DB.medicines.length > 0) return;
+  DB.medicines = [
+    { id:1, name:'Panadol', category:'مسكن ألم', type:'قرص', qty:25, minQty:10, expiry:'2027-05-10', supplier:'إيفا فارما', price:5 },
+    { id:2, name:'Augmentin', category:'مضاد حيوي', type:'كبسولة', qty:10, minQty:15, expiry:'2026-11-20', supplier:'سيد كومباني', price:45 },
+    { id:3, name:'Brufen', category:'مسكن ألم', type:'قرص', qty:18, minQty:10, expiry:'2027-01-15', supplier:'جلوبال ميد', price:12 },
+    { id:4, name:'Vitamin C', category:'فيتامينات', type:'قرص', qty:12, minQty:20, expiry:'2028-08-01', supplier:'دلتا فارما', price:8 },
+  ];
+  DB.patients = [
+    { id:1, name:'محمد عصام', phone:'01055555555', age:35, gender:'ذكر', ssn:'', chronic:'ضغط' },
+    { id:2, name:'آية عادل', phone:'01166666666', age:28, gender:'أنثى', ssn:'', chronic:'' },
+  ];
+  DB.staff = [
+    { id:1, name:'منى سامي', job:'صيدلاني', salary:9000, phone:'01011111111', hire:'2023-01-15' },
+    { id:2, name:'خالد عادل', job:'كاشير', salary:5500, phone:'01122222222', hire:'2022-10-10' },
+  ];
+}
+
+function save() { try { localStorage.setItem('pharma_db', JSON.stringify(DB)); } catch(e){} }
+function load() {
+  try {
+    const d = localStorage.getItem('pharma_db');
+    if (d) DB = JSON.parse(d);
+  } catch(e) {}
+}
+
+// ==================== NAV ====================
+function gotoPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const titles = {
+    dashboard:'🏠 الرئيسية', pos:'🛒 فاتورة بيع جديدة', medicines:'💊 الأدوية والمخزون',
+    patients:'🤒 المرضى', invoices:'🧾 الفواتير والمبيعات', returns:'↩️ المرتجعات',
+    staff:'👥 الموظفون', low_stock:'⚠️ النواقص والتنبيهات'
+  };
+  document.getElementById('page-title').textContent = titles[name] || '';
+  // render
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'medicines') renderMedicines();
+  if (name === 'patients') renderPatients();
+  if (name === 'invoices') renderInvoices();
+  if (name === 'returns') renderReturns();
+  if (name === 'staff') renderStaff();
+  if (name === 'low_stock') renderLowStock();
+  if (name === 'pos') initPOS();
+}
+
+// ==================== TOAST ====================
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.className = 'alert alert-' + (type==='success'?'success':type==='error'?'danger':'warn');
+  t.innerHTML = (type==='success'?'✅ ':type==='error'?'❌ ':'⚠️ ') + msg;
+  t.style.display = 'flex';
+  t.style.position = 'fixed';
+  t.style.top = '80px';
+  t.style.left = '24px';
+  t.style.zIndex = '500';
+  t.style.minWidth = '280px';
+  t.style.boxShadow = '0 8px 24px rgba(0,0,0,.15)';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function alert2(id, msg, type='success') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = `<div class="alert alert-${type==='success'?'success':type==='error'?'danger':'warn'}">${msg}</div>`;
+  setTimeout(() => { el.innerHTML = ''; }, 3000);
+}
+
+// ==================== DASHBOARD ====================
+function renderDashboard() {
+  const today = new Date().toISOString().slice(0,10);
+  const todayInvs = DB.invoices.filter(i => i.date && i.date.slice(0,10) === today);
+  const low = DB.medicines.filter(m => m.qty <= m.minQty);
+  document.getElementById('st-meds').textContent = DB.medicines.length;
+  document.getElementById('st-patients').textContent = DB.patients.length;
+  document.getElementById('st-invoices').textContent = todayInvs.length;
+  document.getElementById('st-low').textContent = low.length;
+
+  const invBody = document.getElementById('dash-invoices-body');
+  const recent = [...DB.invoices].reverse().slice(0,5);
+  invBody.innerHTML = recent.length ? recent.map(inv =>
+    `<tr><td>#${inv.id}</td><td>${inv.patientName}</td><td><strong>${inv.total.toFixed(2)} ج</strong></td><td>${inv.date?inv.date.slice(11,16):''}</td></tr>`
+  ).join('') : `<tr><td colspan="4" class="empty"><div class="e-ico">🧾</div>لا توجد فواتير</td></tr>`;
+
+  const lowBody = document.getElementById('dash-low-body');
+  lowBody.innerHTML = low.length ? low.map(m =>
+    `<tr><td>${m.name}</td><td class="low-stock">${m.qty}</td><td><span class="badge badge-red">⚠️ يحتاج تجديد</span></td></tr>`
+  ).join('') : `<tr><td colspan="3" class="empty" style="text-align:center;color:var(--accent)">✅ المخزون كافٍ</td></tr>`;
+}
+
+// ==================== MEDICINES ====================
+let medNextId = 100;
+function addMedicine() {
+  const name = document.getElementById('med-name').value.trim();
+  const qty = parseInt(document.getElementById('med-qty').value) || 0;
+  const min = parseInt(document.getElementById('med-min').value) || 10;
+  const price = parseFloat(document.getElementById('med-price').value) || 0;
+  if (!name) { alert2('med-alert','يجب إدخال اسم الدواء','error'); return; }
+  const med = {
+    id: ++medNextId,
+    name, qty, minQty: min, price,
+    category: document.getElementById('med-cat').value,
+    type: document.getElementById('med-type').value,
+    expiry: document.getElementById('med-exp').value,
+    supplier: document.getElementById('med-supplier').value.trim()
+  };
+  DB.medicines.push(med);
+  save();
+  alert2('med-alert','✅ تم حفظ الدواء بنجاح');
+  ['med-name','med-qty','med-min','med-price','med-exp','med-supplier'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('med-qty').value = 0;
+  renderMedicines();
+}
+
+function renderMedicines() {
+  const q = (document.getElementById('med-search')?.value || '').toLowerCase();
+  const filtered = DB.medicines.filter(m => m.name.toLowerCase().includes(q) || (m.category||'').includes(q));
+  const today = new Date();
+  document.getElementById('med-tbody').innerHTML = filtered.length ? filtered.map((m,i) => {
+    const exp = m.expiry ? new Date(m.expiry) : null;
+    const expired = exp && exp < today;
+    const low = m.qty <= m.minQty;
+    const status = expired ? `<span class="badge badge-red">منتهي</span>` : low ? `<span class="badge badge-orange">ناقص</span>` : `<span class="badge badge-green">متاح</span>`;
+    return `<tr>
+      <td>${i+1}</td><td><strong>${m.name}</strong></td><td>${m.category||'-'}</td><td>${m.type||'-'}</td>
+      <td class="${low?'low-stock':'ok-stock'}">${m.qty}</td>
+      <td style="${expired?'color:var(--danger);font-weight:700':''}">${m.expiry||'-'}</td>
+      <td>${m.supplier||'-'}</td><td>${m.price||0} ج</td>
+      <td>${status}</td>
+      <td><button class="btn btn-sm btn-outline" onclick="openRestock(${m.id})">📦 تجديد</button></td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="10" class="empty"><div class="e-ico">💊</div>لا توجد أدوية</td></tr>';
+}
+
+let restockMedId = null;
+function openRestock(id) {
+  restockMedId = id;
+  const m = DB.medicines.find(x => x.id === id);
+  document.getElementById('restock-med-name').textContent = m.name + ' (الكمية الحالية: ' + m.qty + ')';
+  document.getElementById('restock-qty').value = '';
+  document.getElementById('restock-modal').style.display = 'flex';
+}
+function doRestock() {
+  const qty = parseInt(document.getElementById('restock-qty').value) || 0;
+  if (qty <= 0) { toast('يجب إدخال كمية صحيحة','error'); return; }
+  const m = DB.medicines.find(x => x.id === restockMedId);
+  m.qty += qty;
+  save(); closeModal('restock-modal'); renderMedicines();
+  toast('تم إضافة ' + qty + ' وحدة لـ ' + m.name);
+}
+
+// ==================== PATIENTS ====================
+let patNextId = 200;
+function addPatient() {
+  const name = document.getElementById('pat-name').value.trim();
+  const phone = document.getElementById('pat-phone').value.trim();
+  if (!name) { alert2('pat-alert','يجب إدخال اسم المريض','error'); return; }
+  DB.patients.push({
+    id: ++patNextId, name, phone,
+    age: document.getElementById('pat-age').value,
+    gender: document.getElementById('pat-gender').value,
+    ssn: document.getElementById('pat-ssn').value.trim(),
+    chronic: document.getElementById('pat-chronic').value.trim()
+  });
+  save(); alert2('pat-alert','✅ تم تسجيل المريض');
+  ['pat-name','pat-phone','pat-age','pat-ssn','pat-chronic'].forEach(id => document.getElementById(id).value = '');
+  renderPatients();
+}
+
+function renderPatients() {
+  const q = (document.getElementById('pat-search')?.value || '').toLowerCase();
+  const filtered = DB.patients.filter(p => p.name.includes(q) || (p.phone||'').includes(q));
+  document.getElementById('pat-tbody').innerHTML = filtered.length ? filtered.map((p,i) => {
+    const invCount = DB.invoices.filter(inv => inv.patientId === p.id).length;
+    return `<tr>
+      <td>${i+1}</td><td><strong>${p.name}</strong></td><td>${p.phone||'-'}</td>
+      <td>${p.age||'-'}</td><td>${p.gender||'-'}</td>
+      <td>${p.chronic||'—'}</td>
+      <td><span class="badge badge-blue">${invCount} فاتورة</span></td>
+      <td><button class="btn btn-sm btn-danger" onclick="deletePatient(${p.id})">🗑️</button></td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8" class="empty"><div class="e-ico">🤒</div>لا يوجد مرضى</td></tr>';
+}
+
+function deletePatient(id) {
+  if (!confirm('هل تريد حذف هذا المريض؟')) return;
+  DB.patients = DB.patients.filter(p => p.id !== id); save(); renderPatients();
+}
+
+// ==================== POS ====================
+let cart = [];
+function initPOS() {
+  // Fill patient select
+  const ps = document.getElementById('pos-patient-select');
+  ps.innerHTML = '<option value="">-- اختر مريض مسجّل --</option>' +
+    DB.patients.map(p => `<option value="${p.id}">${p.name} — ${p.phone||''}</option>`).join('');
+  // Fill employee
+  const es = document.getElementById('pos-employee');
+  es.innerHTML = '<option value="">-- اختر موظف --</option>' +
+    DB.staff.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  // Fill medicines
+  const ms = document.getElementById('pos-med');
+  ms.innerHTML = '<option value="">-- اختر دواء --</option>' +
+    DB.medicines.filter(m => m.qty > 0).map(m => `<option value="${m.id}">${m.name} (${m.qty} متاح)</option>`).join('');
+  renderCart();
+}
+
+function selectPatient() {
+  const id = parseInt(document.getElementById('pos-patient-select').value);
+  if (!id) return;
+  const p = DB.patients.find(x => x.id === id);
+  if (p) {
+    document.getElementById('pos-patient-name').value = p.name;
+    document.getElementById('pos-patient-phone').value = p.phone || '';
+  }
+}
+
+function updateMedInfo() {
+  const id = parseInt(document.getElementById('pos-med').value);
+  const m = DB.medicines.find(x => x.id === id);
+  if (m) {
+    document.getElementById('pos-available').value = m.qty + ' وحدة';
+    document.getElementById('pos-price').value = m.price || '';
+  } else {
+    document.getElementById('pos-available').value = '';
+  }
+}
+
+function addToCart() {
+  const medId = parseInt(document.getElementById('pos-med').value);
+  const qty = parseInt(document.getElementById('pos-qty').value) || 0;
+  const price = parseFloat(document.getElementById('pos-price').value) || 0;
+  const disc = parseFloat(document.getElementById('pos-disc').value) || 0;
+  if (!medId) { alert2('pos-alert','اختر دواء','error'); return; }
+  if (qty <= 0) { alert2('pos-alert','الكمية يجب أن تكون أكبر من صفر','error'); return; }
+  const m = DB.medicines.find(x => x.id === medId);
+  if (!m) return;
+  if (qty > m.qty) { alert2('pos-alert','الكمية المطلوبة أكبر من المتاح في المخزون (' + m.qty + ')', 'error'); return; }
+  const existing = cart.find(c => c.medId === medId);
+  if (existing) { existing.qty += qty; } else {
+    cart.push({ medId, name: m.name, qty, price, disc });
+  }
+  document.getElementById('pos-alert').innerHTML = '';
+  renderCart();
+}
+
+function renderCart() {
+  const empty = document.getElementById('cart-empty');
+  const items = document.getElementById('cart-items');
+  const totalDiv = document.getElementById('cart-total');
+  if (cart.length === 0) { empty.style.display=''; items.innerHTML=''; totalDiv.style.display='none'; return; }
+  empty.style.display = 'none'; totalDiv.style.display = '';
+  let total = 0;
+  items.innerHTML = cart.map((c,i) => {
+    const line = c.price * c.qty * (1 - c.disc/100);
+    total += line;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--border)">
+      <div>
+        <div style="font-weight:700">${c.name}</div>
+        <div style="color:var(--muted);font-size:12px">${c.qty} × ${c.price} ج ${c.disc?'(خصم '+c.disc+'%)':''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <strong>${line.toFixed(2)} ج</strong>
+        <button class="btn btn-sm btn-danger" onclick="removeFromCart(${i})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('cart-total-val').textContent = total.toFixed(2) + ' ج';
+}
+
+function removeFromCart(i) { cart.splice(i, 1); renderCart(); }
+
+function clearCart() { cart = []; renderCart(); }
+
+function submitInvoice() {
+  if (cart.length === 0) { toast('الفاتورة فارغة','error'); return; }
+  let patientName = document.getElementById('pos-patient-name').value.trim();
+  const patPhone = document.getElementById('pos-patient-phone').value.trim();
+  const empId = parseInt(document.getElementById('pos-employee').value);
+  let patientId = parseInt(document.getElementById('pos-patient-select').value) || null;
+  if (!patientName) { toast('يجب إدخال اسم المريض','error'); return; }
+
+  // Auto-register new patient
+  if (!patientId && patientName) {
+    const newPat = { id: ++patNextId, name: patientName, phone: patPhone, age:'', gender:'', ssn:'', chronic:'' };
+    DB.patients.push(newPat);
+    patientId = newPat.id;
+  }
+  const emp = DB.staff.find(s => s.id === empId);
+  const total = cart.reduce((s,c) => s + c.price * c.qty * (1 - c.disc/100), 0);
+  const inv = {
+    id: DB.nextInvId++,
+    patientId, patientName,
+    employeeId: empId,
+    employeeName: emp ? emp.name : '-',
+    items: [...cart],
+    total,
+    date: new Date().toISOString()
+  };
+  // Deduct stock
+  cart.forEach(c => {
+    const m = DB.medicines.find(x => x.id === c.medId);
+    if (m) m.qty -= c.qty;
+  });
+  DB.invoices.push(inv);
+  save();
+  cart = [];
+  toast('✅ تم تسجيل الفاتورة #' + inv.id + ' — الإجمالي: ' + total.toFixed(2) + ' ج');
+  initPOS();
+}
+
+// ==================== INVOICES ====================
+function renderInvoices() {
+  const q = (document.getElementById('inv-search')?.value || '').toLowerCase();
+  const filtered = [...DB.invoices].reverse().filter(inv =>
+    inv.patientName.includes(q) || String(inv.id).includes(q)
+  );
+  document.getElementById('inv-tbody').innerHTML = filtered.length ? filtered.map((inv,i) => `<tr>
+    <td>${i+1}</td>
+    <td><strong>#${inv.id}</strong></td>
+    <td>${inv.patientName}</td>
+    <td>${inv.employeeName||'-'}</td>
+    <td>${inv.items.length} صنف</td>
+    <td><strong>${inv.total.toFixed(2)} ج</strong></td>
+    <td>${inv.date?inv.date.slice(0,10):'-'}</td>
+    <td><button class="btn btn-sm btn-outline" onclick="viewInvoice(${inv.id})">👁️ تفاصيل</button></td>
+  </tr>`).join('') : '<tr><td colspan="8" class="empty"><div class="e-ico">🧾</div>لا توجد فواتير</td></tr>';
+}
+
+function viewInvoice(id) {
+  const inv = DB.invoices.find(i => i.id === id);
+  if (!inv) return;
+  document.getElementById('inv-modal-body').innerHTML = `
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <span><strong>رقم الفاتورة:</strong> #${inv.id}</span>
+        <span><strong>التاريخ:</strong> ${inv.date?inv.date.slice(0,10):'-'}</span>
+      </div>
+      <div><strong>المريض:</strong> ${inv.patientName}</div>
+      <div><strong>الموظف:</strong> ${inv.employeeName||'-'}</div>
+    </div>
+    <table style="width:100%;font-size:13px"><thead><tr><th>الدواء</th><th>الكمية</th><th>السعر</th><th>الخصم</th><th>الإجمالي</th></tr></thead>
+    <tbody>${inv.items.map(c => `<tr><td>${c.name}</td><td>${c.qty}</td><td>${c.price} ج</td><td>${c.disc}%</td><td>${(c.price*c.qty*(1-c.disc/100)).toFixed(2)} ج</td></tr>`).join('')}</tbody>
+    </table>
+    <div style="text-align:left;margin-top:14px;font-size:17px;font-weight:900;color:var(--sidebar)">الإجمالي: ${inv.total.toFixed(2)} ج</div>`;
+  document.getElementById('inv-modal').style.display = 'flex';
+}
+
+// ==================== RETURNS ====================
+function renderReturns() {
+  const retInv = document.getElementById('ret-invoice');
+  retInv.innerHTML = '<option value="">-- اختر فاتورة --</option>' +
+    DB.invoices.map(inv => `<option value="${inv.id}">#${inv.id} — ${inv.patientName}</option>`).join('');
+
+  document.getElementById('ret-tbody').innerHTML = DB.returns.length ? [...DB.returns].reverse().map((r,i) => `<tr>
+    <td>${i+1}</td><td>#${r.invoiceId}</td><td>${r.patientName||'-'}</td>
+    <td>${r.medName}</td><td>${r.qty}</td><td>${r.reason}</td><td>${r.date?r.date.slice(0,10):'-'}</td>
+  </tr>`).join('') : '<tr><td colspan="7" class="empty"><div class="e-ico">↩️</div>لا توجد مرتجعات</td></tr>';
+}
+
+function loadReturnItems() {
+  const invId = parseInt(document.getElementById('ret-invoice').value);
+  const inv = DB.invoices.find(i => i.id === invId);
+  const sel = document.getElementById('ret-med');
+  if (!inv) { sel.innerHTML = '<option>-- اختر بعد الفاتورة --</option>'; return; }
+  sel.innerHTML = inv.items.map(c => `<option value="${c.medId}">${c.name} (مباع: ${c.qty})</option>`).join('');
+}
+
+function addReturn() {
+  const invId = parseInt(document.getElementById('ret-invoice').value);
+  const medId = parseInt(document.getElementById('ret-med').value);
+  const qty = parseInt(document.getElementById('ret-qty').value) || 0;
+  const reason = document.getElementById('ret-reason').value;
+  if (!invId) { alert2('ret-alert','اختر فاتورة','error'); return; }
+  if (!medId) { alert2('ret-alert','اختر الدواء','error'); return; }
+  if (qty <= 0) { alert2('ret-alert','الكمية يجب أن تكون أكبر من صفر','error'); return; }
+  const inv = DB.invoices.find(i => i.id === invId);
+  const item = inv?.items.find(c => c.medId === medId);
+  if (!item) { alert2('ret-alert','الدواء غير موجود في هذه الفاتورة','error'); return; }
+  if (qty > item.qty) { alert2('ret-alert','الكمية المُرجعة تتجاوز الكمية المباعة','error'); return; }
+  // Restore stock
+  const m = DB.medicines.find(x => x.id === medId);
+  if (m) m.qty += qty;
+  DB.returns.push({ invoiceId: invId, patientName: inv.patientName, medId, medName: item.name, qty, reason, date: new Date().toISOString() });
+  save(); alert2('ret-alert','✅ تم تسجيل المرتجع'); renderReturns();
+}
+
+// ==================== STAFF ====================
+let staffNextId = 300;
+function addStaff() {
+  const name = document.getElementById('staff-name').value.trim();
+  if (!name) { alert2('staff-alert','يجب إدخال اسم الموظف','error'); return; }
+  DB.staff.push({
+    id: ++staffNextId, name,
+    job: document.getElementById('staff-job').value,
+    salary: parseFloat(document.getElementById('staff-salary').value) || 0,
+    phone: document.getElementById('staff-phone').value.trim(),
+    hire: document.getElementById('staff-hire').value
+  });
+  save(); alert2('staff-alert','✅ تم حفظ الموظف');
+  ['staff-name','staff-salary','staff-phone','staff-hire'].forEach(id => document.getElementById(id).value = '');
+  renderStaff();
+}
+
+function renderStaff() {
+  document.getElementById('staff-tbody').innerHTML = DB.staff.length ? DB.staff.map((s,i) => `<tr>
+    <td>${i+1}</td><td><strong>${s.name}</strong></td>
+    <td><span class="badge badge-blue">${s.job}</span></td>
+    <td>${s.salary?s.salary.toLocaleString()+' ج':'-'}</td>
+    <td>${s.phone||'-'}</td><td>${s.hire||'-'}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteStaff(${s.id})">🗑️</button></td>
+  </tr>`).join('') : '<tr><td colspan="7" class="empty"><div class="e-ico">👥</div>لا يوجد موظفون</td></tr>';
+}
+
+function deleteStaff(id) {
+  if (!confirm('هل تريد حذف هذا الموظف؟')) return;
+  DB.staff = DB.staff.filter(s => s.id !== id); save(); renderStaff();
+}
+
+// ==================== LOW STOCK ====================
+function renderLowStock() {
+  const today = new Date();
+  const items = DB.medicines.map(m => {
+    const exp = m.expiry ? new Date(m.expiry) : null;
+    const expired = exp && exp < today;
+    const daysToExp = exp ? Math.ceil((exp-today)/(1000*60*60*24)) : null;
+    const soonExp = daysToExp !== null && daysToExp <= 90 && daysToExp > 0;
+    const low = m.qty <= m.minQty;
+    return { ...m, expired, low, daysToExp, soonExp };
+  }).filter(m => m.low || m.expired || m.soonExp);
+
+  const box = document.getElementById('low-alerts-box');
+  const critical = items.filter(m => m.expired || m.qty === 0);
+  box.innerHTML = critical.map(m =>
+    `<div class="alert alert-danger">🚨 ${m.name} — ${m.expired?'منتهي الصلاحية':'نفد المخزون تماماً'}</div>`
+  ).join('');
+
+  document.getElementById('low-tbody').innerHTML = items.length ? items.map(m => {
+    let status = '';
+    if (m.expired) status = `<span class="badge badge-red">منتهي الصلاحية</span>`;
+    else if (m.qty === 0) status = `<span class="badge badge-red">نفد المخزون</span>`;
+    else if (m.low) status = `<span class="badge badge-orange">⚠️ ناقص</span>`;
+    else if (m.soonExp) status = `<span class="badge badge-orange">ينتهي قريباً (${m.daysToExp} يوم)</span>`;
+    return `<tr>
+      <td><strong>${m.name}</strong></td>
+      <td class="${m.qty<=0?'low-stock':''}">${m.qty}</td>
+      <td>${m.minQty}</td>
+      <td style="${m.expired?'color:var(--danger);font-weight:700':''}">${m.expiry||'-'}</td>
+      <td>${status}</td>
+      <td><button class="btn btn-sm btn-primary" onclick="openRestock(${m.id})">📦 تجديد</button></td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty" style="text-align:center;color:var(--accent)">✅ لا توجد تنبيهات — كل شيء على ما يرام</td></tr>';
+}
+
+// ==================== MODAL ====================
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// ==================== DATE ====================
+function updateDate() {
+  const d = new Date();
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  document.getElementById('topbar-date').textContent =
+    days[d.getDay()] + '، ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+// ==================== INIT ====================
+load(); seedData(); save();
+updateDate();
+renderDashboard();
+</script>
+</body>
+</html>
